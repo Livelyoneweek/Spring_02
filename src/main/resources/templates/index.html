@@ -1,0 +1,395 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta property="og:title" content="나만의 블로그">
+    <meta property="og:description" content="블로그 기능구현해봤습니다">
+    <meta property="og:image" content="images/og_selectshop.png">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <title>나만의 블로그</title>
+
+    <!-- Bulma CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.1/css/bulma.min.css">
+</head>
+
+<style>
+    .banner {
+        height : 200px;
+
+        border:1px solid;
+        padding:10px;
+        margin: auto;
+        background-color: green;
+    }
+    .banner-write {
+        text-align:center;
+        font-size:50px;
+    }
+
+
+    .mybtn {
+        height : 40px;
+        width : 150px;
+        padding:10px;
+        margin: 10px auto 0px auto;
+    }
+
+    .mybtn2 {
+        height : 40px;
+        width : 150px;
+        padding:5px;
+        margin: 0 auto 10px auto;
+        font-size: 20px;
+    }
+
+
+    .wrap {
+        width: 1000px;
+        margin: 10px auto;
+    }
+    .card {
+        margin:10px auto;
+    }
+
+    #cards-box {
+        border:1px solid;
+        margin : 10px auto 0 auto;
+    }
+
+    #cards-box2 {
+        border:1px solid;
+        margin : 40px auto 0 auto;
+    }
+
+    .metadata {
+        height:30px;
+
+    }
+
+    .username {
+        font-size:15px;
+        float: left; width: 20%;
+    }
+    .title-write {
+        font-size:15px;
+        float: left; width: 35%;
+    }
+    .date {
+        font-size:15px;
+        float: left; width: 25%;
+    }
+    .edit-delete {
+        padding : 3px 0 0 0;
+        float: right; width: 20%;
+    }
+
+    .write-box{
+        width:400px;
+        height : 600px;
+        border : 1px solid;
+        margin : 50px auto 0 auto;
+        text-align: center;
+        background-color: #adb5bd;
+    }
+
+    .read-box{
+        width:400px;
+        height : 300px;
+        border : 1px solid;
+        margin : 150px auto 0 auto;
+        text-align: center;
+        background-color: #FDD7A0;
+    }
+
+    #contents {
+        width :300px;
+        height : 300px;
+    }
+
+    .read-contents {
+        border : 1px solid;
+        width : 300px;
+        height : 150px;
+        text-align: center;
+        margin:auto;
+    }
+
+    #logout-text {
+        position:absolute;
+        top:20px;
+        right:48px;
+        font-size: 18px;
+        font-family: SpoqaHanSansNeo;
+        font-size: 18px;
+        font-weight: 500;
+        font-stretch: normal;
+        font-style: normal;
+        line-height: 1;
+        letter-spacing: 0.36px;
+        text-align: center;
+        color: #ffffff;
+    }
+
+    #login-text{
+        position:absolute;
+        top:65px;
+        right:48px;
+        font-size: 18px;
+        font-family: SpoqaHanSansNeo;
+        font-size: 18px;
+        font-weight: 500;
+        font-stretch: normal;
+        font-style: normal;
+        line-height: 1;
+        letter-spacing: 0.36px;
+        text-align: center;
+        color: #ffffff;
+    }
+
+    .deleteButton {
+        display:none;
+    }
+
+</style>
+
+<script>
+    $(document).ready(function () {
+        // HTML 문서를 로드할 때마다 실행합니다.
+        getMessages();
+
+    })
+
+    function getMessages() {
+        // 1. 기존 메모 내용을 지웁니다.
+        $('#cards-box').empty();
+        // 2. 메모 목록을 불러와서 HTML로 붙입니다.
+        $.ajax({
+            type: 'GET',
+            url: '/api/memos',
+            success: function (response) {
+                for (let i = 0; i < response.length; i++) {
+                    let message = response[i];
+                    let id = message['id'];
+                    let username = message['username'];
+                    let contents = message['contents'];
+                    let title = message['title'];
+                    let modifiedAt = message['modifiedAt'];
+                    addHTML(id, username, contents, modifiedAt, title);
+                }
+            }
+        })
+
+    }
+    // 메모 하나를 HTML로 만들어서 body 태그 내 원하는 곳에 붙입니다.
+    function addHTML(id, username, contents, modifiedAt, title) {
+        // 1. HTML 태그를 만듭니다.
+        let tempHtml = `<div class="card">
+                                <!-- date/username 영역 -->
+                                <div class="metadata">
+                                    <div id="${id}-username" class="username">
+                                        ${username}
+                                    </div>
+                                    <div class="title-write">
+                                        ${title}
+                                    </div>
+                                    <div class="date">
+                                        ${modifiedAt}
+                                    </div>
+
+                                    <div class="contents modal" id="${id}-contents">
+                                        ${contents}
+                                    </div>
+
+                                    <div class="edit-delete">
+                                        <button class="deleteButton" id="${id}-delete" onclick="deleteOne('${id}')"> 삭제 버튼 </button>
+                                        <button onclick="remember(${id});  location.href='/move/details'"> 상세 페이지 </button>
+                                    </div>
+                                </div>
+                            </div>`;
+        // 2. #cards-box 에 HTML을 붙인다.
+
+        $('#cards-box').append(tempHtml);
+
+        let check = `${username}`;
+        let check2= $('#user-check').text();
+
+        if (check == check2) {
+           // $(`#${id}-delete`).addClass("is-active")
+            document.getElementById(`${id}-delete`).style.display="inline-block";
+        }
+
+    }
+
+    function remember(id) {
+        localStorage.setItem('id',id);
+    }
+
+
+    function writePost() {
+        // 1. 작성한 메모를 불러옵니다.
+        let contents = $('#contents').val();
+        let title = $('#title').val();
+        let username = $('#user-name').text();
+
+        // 4. 전달할 data JSON으로 만듭니다.
+        let data = {'username': username, 'contents': contents, 'title':title};
+        // 5. POST /api/memos 에 data를 전달합니다.
+        $.ajax({
+            type: "POST",
+            url: "/api/memosUp/post",
+            contentType: "application/json", // JSON 형식으로 전달함을 알리기
+            data: JSON.stringify(data),
+            success: function (response) {
+                alert('메시지가 성공적으로 작성되었습니다.');
+                $("#write-box").removeClass("is-active");
+                window.location.reload();
+
+            }
+        });
+    }
+
+    function deleteOne(id) {
+        $.ajax({
+            type: "DELETE",
+            url: `/api/memosUp/${id}`,
+            success: function (response) {
+                alert('메시지 삭제에 성공하였습니다.');
+                window.location.reload();
+            }
+        })
+    }
+
+    function logincheck() {
+        let username1 = $('#user-check').text();
+        let username2 = "";
+        if (username1 == username2) {
+            alert("로그인을 먼저 해주시기 바랍니다")
+            location.href = '/'
+        } else {
+            $("#write-box").addClass("is-active")
+        }
+    }
+
+    function loginMove() {
+        if($('#user-check').text() != ""){
+            alert("이미 로그인이 되어있습니다");
+            location.href='/';
+        } else{
+            location.href='/user/login';
+        }
+    }
+
+</script>
+
+<body>
+
+<div th:if="${admin_role}" id="admin"></div>
+<div class= "modal" th:if="${username}" th:text="${username}" id="user-check" ></div>
+
+<div class="banner">
+    <form id="my_form" method="post" action="/user/logout">
+        <a id="logout-text" href="javascript:{}" onclick="document.getElementById('my_form').submit();">로그아웃</a>
+    </form>
+    <a id="login-text" href="javascript:{}" onClick="loginMove()">로그인</a>
+
+    <p class = "banner-write"> <span th:text="${username}"></span>님의 블로그</p>
+
+</div>
+<div class="mybtn">
+    <button class="mybtn2" onclick='logincheck()'>게시글 남기기</button>
+</div>
+
+<div class="wrap">
+    <div id="cards-box2" class="area-read">
+        <div class="card" >
+            <!-- date/username 영역 -->
+            <div class="metadata">
+                <div  class="username" >
+                    작성자명
+                </div>
+                <div class="title-write" >
+                    제목
+                </div>
+                <div class="date" >
+                    날짜
+                </div>
+                <div class="contents modal" >
+                    내용
+                </div>
+                <div class="edit-delete2">
+                    삭제버튼 , 상세 페이지
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="wrap">
+    <div id="cards-box" class="area-read">
+        <div class="card" >
+            <!-- date/username 영역 -->
+            <div class="metadata">
+                <div id="1-username" class="username" >
+                    작성자명
+                </div>
+                <div class="title-write" >
+                    제목
+                </div>
+                <div class="date" >
+                    날짜
+                </div>
+
+                <div class="edit-delete2">
+                    삭제버튼 상세페이지
+                </div>
+                <div class="contents modal" id="('1')-contents" >
+                    내용
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+<div class="write-box modal" id="write-box">
+    <h1>
+        글쓰기 공간입니다.
+    </h1>
+
+    <p>작성자 이름</p>
+    <span id="user-name" th:text="${username}"></span>
+    <p>제목</p>
+    <p><input id="title" type="text"/></p>
+    <textarea class="field" placeholder="공유하고 싶은 소식을 입력해주세요" id="contents" cols="30"
+              rows="10"></textarea>
+    <div>
+        <button class="mybtn" onclick="writePost()">글 작성 완료</button>
+    </div>
+    <div>
+        <button class="mybtn" onclick='$("#write-box").removeClass("is-active")'>나가기</button>
+    </div>
+</div>
+
+<div class="read-box modal" id="read-box">
+    <h1>
+        상세 페이지 (작은 공간)
+    </h1>
+
+    <p id="read-box-username">여기에 작성자 이름</p>
+    <p id="read-box-modifiedAt">여기에 수정시간</p>
+    <p id="read-box-title">여기에 타이틀</p>
+    <div class="read-contents" id="read-box-contents">여기에 해당 내용</div>
+    <div>
+        <button class="mybtn" onclick='$("#read-box").removeClass("is-active")'>나가기</button>
+        <button class="mybtn" id="moveDetail" onClick="location.href='/move/details'">페이지로 보기</button>
+    </div>
+</div>
+
+</body>
+</html>
