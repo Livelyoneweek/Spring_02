@@ -2,14 +2,9 @@ package com.sparta.springcore.controller;
 
 import com.sparta.springcore.dto.MemoRequestDto;
 import com.sparta.springcore.model.Memo;
-import com.sparta.springcore.model.UserRoleEnum;
 import com.sparta.springcore.repository.MemoRepository;
-import com.sparta.springcore.security.UserDetailsImpl;
-import com.sparta.springcore.service.MemoService;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
@@ -21,7 +16,6 @@ import java.util.Optional;
 public class MemoController {
 
     private final MemoRepository memoRepository;
-    private final MemoService memoService;
 
     // 게시글 생성하는 API
     @PostMapping("/api/memosUp/post")

@@ -1,6 +1,5 @@
 package com.sparta.springcore.service;
 
-import com.sparta.springcore.dto.CommentRequestDto;
 import com.sparta.springcore.dto.CommentUpdateDto;
 import com.sparta.springcore.model.Comment;
 import com.sparta.springcore.repository.CommentRepository;

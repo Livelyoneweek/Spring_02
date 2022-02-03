@@ -5,7 +5,6 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sparta.springcore.dto.KakaoUserInfoDto;
 import com.sparta.springcore.model.User;
-import com.sparta.springcore.model.UserRoleEnum;
 import com.sparta.springcore.repository.UserRepository;
 import com.sparta.springcore.security.UserDetailsImpl;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -61,7 +60,7 @@ public class KakaoUserService {
         MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
         body.add("grant_type", "authorization_code");
         body.add("client_id", "e329711ac4d80f362e8e675f971bd9dd");
-        body.add("redirect_uri", "http://localhost:8080/user/kakao/callback");
+        body.add("redirect_uri", "http://13.125.15.214/user/kakao/callback");
         body.add("code", code);
 
         // HTTP 요청 보내기

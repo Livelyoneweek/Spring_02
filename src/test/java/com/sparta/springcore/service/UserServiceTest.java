@@ -160,14 +160,14 @@ class UserServiceTest {
                 Long kakaoId;
 
                 SignupRequestDto signupRequestDto = new SignupRequestDto(
-                        username = "abcde",
+                        username = "abc123",
                         password = "123334",
                         email = "1234@naver.com",
                         password2 = "123334"
                 );
 
                 User user = new User (
-                        username = "abcde",
+                        username = "abc123",
                         password = "12345",
                         email = "1234@naver.com",
                         kakaoId= 3L

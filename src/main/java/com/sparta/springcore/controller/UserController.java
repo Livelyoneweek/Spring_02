@@ -64,7 +64,7 @@ public class UserController {
             for (String key : validatorResult.keySet()) {
                 model.addAttribute(key, validatorResult.get(key));
             }
-            return "/signup";
+            return "signup";
         }
 
         try {
@@ -72,7 +72,7 @@ public class UserController {
             userService.registerUser(signupRequestDto);
         } catch (Exception e) {
             model.addAttribute("errorMessage", e.getMessage());
-            return "/signup";
+            return "signup";
         }
         return "redirect:/user/login";
     }
